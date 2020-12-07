@@ -1,0 +1,11 @@
+version: '3.3'
+services:
+    kmsservice:
+        build: .
+        ports:
+            - "8280:8280"            
+        env_file: ./misc/config/envfile
+        networks: 
+            - backend        
+networks:
+    backend:

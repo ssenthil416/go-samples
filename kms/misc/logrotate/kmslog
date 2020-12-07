@@ -1,0 +1,11 @@
+#
+#       Logrotate fragment for kms log.
+#
+/var/log/kms/kms.log {
+        notifempty
+        daily
+        rotate 10
+        missingok
+        compress
+        copytruncate
+}
