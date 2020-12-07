@@ -27,7 +27,7 @@ RUN mkdir -p /tmp/kms   # for logging log
 RUN mkdir -p /tmp/config/
 
 # env variable
-ENV KMS_PORT=8181
+ENV KMS_PORT=8280
 ENV KMS_PROJECT_ID=kms-idm-232323
 ENV KMS_LOCATION=global
 ENV KMS_LOGGING_LEVEL=debug
@@ -41,7 +41,7 @@ COPY --from=builder /kms/misc/config  /tmp/kms/config/
 COPY --from=builder /kms/kmsservice /kmsservice
 
 # Expose port 8080 to the outside world
-EXPOSE 8181
+EXPOSE 8280
 
 # Run the web service on container startup.
 CMD ["./kmsservice"]
