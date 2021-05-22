@@ -8,9 +8,9 @@ import (
 
 func GetLinesToValidate() ([]string, error) {
 	// opens specific file in read-only
-	file, err := os.Open("dictionary.txt")
+	file, err := os.Open("./input/big.txt")
 	if err != nil {
-		return nil, fmt.Errorf("failed to open : dictionary.txt")
+		return nil, fmt.Errorf("input file open failed :%v\n", err)
 	}
 	defer file.Close()
 

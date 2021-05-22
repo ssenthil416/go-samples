@@ -10,7 +10,7 @@ import (
 func GetDicReady(dictionary map[string][]string) error {
 
 	// opens specific file in read-only
-	file, err := os.Open("dictionary.txt")
+	file, err := os.Open("./dic/dictionary.txt")
 	if err != nil {
 		return fmt.Errorf("dic file open failed :%v", err)
 	}
@@ -24,10 +24,7 @@ func GetDicReady(dictionary map[string][]string) error {
 	for scanner.Scan() {
 		lines = append(lines, scanner.Text())
 	}
-	//fmt.Println(len(lines))
-
-	// allocate dic
-	dictionary = make(map[string][]string)
+	//fmt.Printf("num of dictionary lines :%d\n", len(lines))
 
 	// fill inmemory dic for validation
 	for _, w := range lines {
@@ -41,7 +38,6 @@ func GetDicReady(dictionary map[string][]string) error {
 			dictionary[k] = val
 		}
 	}
-	//fmt.Printf("dic :%+v", dic)
-
+	//fmt.Printf("len of dictionary  :%d\n", len(dictionary))
 	return nil
 }
