@@ -3,13 +3,26 @@ package main
 import (
 	"fmt"
 	"strings"
+	"sync"
 
 	"github.com/go-samples/interview/wm/spellcheck/dic"
 	"github.com/go-samples/interview/wm/spellcheck/input"
 )
 
+const (
+	numOfWorkers = 4
+)
+
+type JobInfo struct {
+	lineString string
+	lineNumber int
+}
+
 var (
-	dictionary map[string][]string
+	dictionary     map[string][]string
+	stopWorkerChan chan struct{}
+	jobChan        chan JobInfo
+	jobDoneChan    chan bool
 )
 
 func main() {
@@ -22,14 +35,6 @@ func main() {
 		return
 	}
 
-	/*
-		fmt.Printf("len of dictionary  :%d\n", len(dictionary))
-
-			for k, v := range dictionary {
-				fmt.Printf(" key : %+v", k)
-				fmt.Printf(" len of v :%d\n", len(v))
-			}
-	*/
 	inLines, err := input.GetLinesToValidate()
 	if err != nil {
 		fmt.Printf("Error :%+v\n", err)
@@ -37,30 +42,82 @@ func main() {
 
 	//fmt.Println("Lines to validate :", len(inLines))
 
+	// init Chan
+	stopWorkerChan = make(chan struct{})
+	jobChan = make(chan JobInfo, numOfWorkers)
+	jobDoneChan = make(chan bool, len(inLines))
+
+	// start worker
+	wg := &sync.WaitGroup{}
+	for i := 0; i < numOfWorkers; i++ {
+		wg.Add(1)
+		go runWorker(wg, jobChan, stopWorkerChan, jobDoneChan)
+	}
+
+	// assign job to worker
 	for lineNum, lineStr := range inLines {
-		wsfl := strings.Split(lineStr, " ")
-		for cn, w := range wsfl {
-			lw := strings.ToLower(w)
+		tmp := JobInfo{}
+		tmp.lineString = lineStr
+		tmp.lineNumber = lineNum + 1
+		jobChan <- tmp
+	}
 
-			// avoid word which got number and special char
-			if avoidWord([]byte(lw)) {
-				continue
+	// validate all job is done
+	count := 1
+	for {
+		if <-jobDoneChan {
+			count++
+			if count == len(inLines) {
+				break
 			}
+		}
+	}
 
-			//fmt.Println(" Before extraAToZOnly :", string(lw))
+	// time to close job channel
+	close(jobChan)
 
-			// extra only atoz in a word
-			vw := extraAToZOnly([]byte(lw))
+	// time stop all workers
+	close(stopWorkerChan)
 
-			// avoid word which got number and special char
-			if avoidWord(vw) {
-				continue
+	// wait for all worker to close
+	wg.Wait()
+}
+
+func runWorker(wg *sync.WaitGroup, jobChan chan JobInfo, stopWorkerChan chan struct{}, jobDoneChan chan<- bool) {
+	for {
+		select {
+		case <-stopWorkerChan:
+			wg.Done()
+			return
+		case ji := <-jobChan:
+
+			wsfl := strings.Split(ji.lineString, " ")
+			cn := 0
+			for _, w := range wsfl {
+				lw := strings.ToLower(w)
+				cn = cn + len(lw) + 1
+
+				// avoid word which got number and special char
+				if avoidWord([]byte(lw)) {
+					continue
+				}
+
+				//fmt.Println(" Before extraAToZOnly :", string(lw))
+
+				// extra only atoz in a word
+				vw := extraAToZOnly([]byte(lw))
+
+				// avoid word which got number and special char
+				if avoidWord(vw) {
+					continue
+				}
+
+				sw, ok := validate(vw)
+				if !ok {
+					fmt.Printf("Line Number :%d, Column Number :%d, Wrong word :%s, Suggested Word:%s\n", ji.lineNumber, cn, vw, sw)
+				}
 			}
-
-			sw, ok := validate(vw)
-			if !ok {
-				fmt.Printf("Line Number :%d, Column Number :%d, Wrong word :%s, Suggested Word:%s\n", lineNum+1, cn, vw, sw)
-			}
+			jobDoneChan <- true
 		}
 	}
 
