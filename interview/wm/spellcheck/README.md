@@ -27,6 +27,8 @@ cd go-samples/interview/wm/spellcheck
 
 
 // Sample output
+```
 Line Number :7, Column Number :0, Wrong word :wecome, Suggested Word:
+```
 
 Note: the words which are not part of dictionary are deplayed here too.
