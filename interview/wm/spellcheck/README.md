@@ -18,7 +18,7 @@ Within given four hours, I have complete below tasks
 ```
 mkdir github
 cd github
-https://github.com/ssenthil416/go-samples.git
+git clone https://github.com/ssenthil416/go-samples.git
 cd go-samples/interview/wm/spellcheck
 ```
 
