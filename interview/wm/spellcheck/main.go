@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/go-samples/interview/wm/spellcheck/dic"
-	"github.com/go-samples/interview/wm/spellcheck/input"
+	"github.com/go-samples/interview/walmart/spellcheck/dic"
+	"github.com/go-samples/interview/walmart/spellcheck/input"
 )
 
 var (

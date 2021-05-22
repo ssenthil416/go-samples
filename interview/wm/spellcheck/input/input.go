@@ -1,4 +1,4 @@
-package main
+package input
 
 import (
 	"bufio"
@@ -6,7 +6,7 @@ import (
 	"os"
 )
 
-func getLinesToValidate() ([]string, error) {
+func GetLinesToValidate() ([]string, error) {
 	// opens specific file in read-only
 	file, err := os.Open("dictionary.txt")
 	if err != nil {
