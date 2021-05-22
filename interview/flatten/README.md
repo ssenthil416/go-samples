@@ -1,0 +1,7 @@
+# GO Flatten 
+
+#build and output
+>go run flatten_int.go 
+
+
+[1 2 3 4 5 6 7 8]
