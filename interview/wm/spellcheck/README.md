@@ -28,7 +28,7 @@ cd go-samples/interview/wm/spellcheck
 
 // Sample output
 ```
-Line Number :7, Column Number :0, Wrong word :wecome, Suggested Word:
+Line Number :7, Column Number :1, Wrong word :wecome, Suggested Word:
 ```
 
 

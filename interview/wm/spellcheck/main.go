@@ -92,13 +92,13 @@ func runWorker(wg *sync.WaitGroup, jobChan chan JobInfo, stopWorkerChan chan str
 		case ji := <-jobChan:
 
 			wsfl := strings.Split(ji.lineString, " ")
-			cn := 0
+			cn := 1
 			for _, w := range wsfl {
 				lw := strings.ToLower(w)
-				cn = cn + len(lw) + 1
 
 				// avoid word which got number and special char
 				if avoidWord([]byte(lw)) {
+					cn = cn + len(lw) + 1
 					continue
 				}
 
@@ -109,6 +109,7 @@ func runWorker(wg *sync.WaitGroup, jobChan chan JobInfo, stopWorkerChan chan str
 
 				// avoid word which got number and special char
 				if avoidWord(vw) {
+					cn = cn + len(lw) + 1
 					continue
 				}
 
@@ -116,6 +117,7 @@ func runWorker(wg *sync.WaitGroup, jobChan chan JobInfo, stopWorkerChan chan str
 				if !ok {
 					fmt.Printf("Line Number :%d, Column Number :%d, Wrong word :%s, Suggested Word:%s\n", ji.lineNumber, cn, vw, sw)
 				}
+				cn = cn + len(lw) + 1
 			}
 			jobDoneChan <- true
 		}
