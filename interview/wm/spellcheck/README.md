@@ -15,11 +15,12 @@ Within given four hours, I have complete below tasks
 
 
 // Setps to clone repo to your go src
-> mkdir github
-> cd github
-> https://github.com/ssenthil416/go-samples.git
-> cd go-samples/interview/wm/spellcheck
-
+```
+mkdir github
+cd github
+https://github.com/ssenthil416/go-samples.git
+cd go-samples/interview/wm/spellcheck
+```
 
 // Build and Run
 > go run main.go
