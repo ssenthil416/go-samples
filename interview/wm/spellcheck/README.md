@@ -4,13 +4,13 @@ Within given four hours, I have complete below tasks
 ```
 * The program outputs a list of incorrectly spelled words. 
 * The program includes the line and column number of the misspelled word
+* The program handles proper nouns (person or place names, for example) correctly.
 ```
 
 // Not Completed Task
 ```
 * For each misspelled word, the program outputs a list of suggested words.
 * The program prints the misspelled word along with some surrounding context.
-* The program handles proper nouns (person or place names, for example) correctly.
 ```
 
 
@@ -35,6 +35,7 @@ Line Number :7, Column Number :1, Wrong word :wecome, Suggested Word:
 // Assumption
 ```
 - Input file to validate is a text file.
+- Nouns can be added to nouns file and if we run, the added nouns will be avoided from wrong list
 ```
 
 Note: the words which are not part of dictionary are deplayed here too.

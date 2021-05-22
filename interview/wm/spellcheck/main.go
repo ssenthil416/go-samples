@@ -7,6 +7,7 @@ import (
 
 	"github.com/go-samples/interview/wm/spellcheck/dic"
 	"github.com/go-samples/interview/wm/spellcheck/input"
+	"github.com/go-samples/interview/wm/spellcheck/nouns"
 )
 
 const (
@@ -37,6 +38,11 @@ func main() {
 
 	inLines, err := input.GetLinesToValidate()
 	if err != nil {
+		fmt.Printf("Error :%+v\n", err)
+	}
+
+	// populate nouns
+	if err := nouns.Populate(); err != nil {
 		fmt.Printf("Error :%+v\n", err)
 	}
 
@@ -113,6 +119,12 @@ func runWorker(wg *sync.WaitGroup, jobChan chan JobInfo, stopWorkerChan chan str
 					continue
 				}
 
+				// avoid nouns
+				if nouns.Avoid(string(vw)) {
+					cn = cn + len(lw) + 1
+					continue
+				}
+
 				sw, ok := validate(vw)
 				if !ok {
 					fmt.Printf("Line Number :%d, Column Number :%d, Wrong word :%s, Suggested Word:%s\n", ji.lineNumber, cn, vw, sw)
@@ -122,7 +134,6 @@ func runWorker(wg *sync.WaitGroup, jobChan chan JobInfo, stopWorkerChan chan str
 			jobDoneChan <- true
 		}
 	}
-
 }
 
 func validate(vw []byte) (string, bool) {

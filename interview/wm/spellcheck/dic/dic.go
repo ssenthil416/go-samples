@@ -1,29 +1,18 @@
 package dic
 
 import (
-	"bufio"
-	"fmt"
-	"os"
 	"strings"
+
+	"github.com/go-samples/interview/wm/spellcheck/common"
 )
 
 func GetDicReady(dictionary map[string][]string) error {
 
-	// opens specific file in read-only
-	file, err := os.Open("./dic/dictionary.txt")
+	lines, err := common.ReadLinesFromFile("./dic/dictionary.txt")
 	if err != nil {
-		return fmt.Errorf("dic file open failed :%v", err)
+		return err
 	}
-	defer file.Close()
 
-	// read content from the file
-	scanner := bufio.NewScanner(file)
-	scanner.Split(bufio.ScanLines)
-	var lines []string
-
-	for scanner.Scan() {
-		lines = append(lines, scanner.Text())
-	}
 	//fmt.Printf("num of dictionary lines :%d\n", len(lines))
 
 	// fill inmemory dic for validation
