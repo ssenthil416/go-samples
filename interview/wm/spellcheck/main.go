@@ -8,6 +8,8 @@ import (
 	"github.com/go-samples/interview/wm/spellcheck/dic"
 	"github.com/go-samples/interview/wm/spellcheck/input"
 	"github.com/go-samples/interview/wm/spellcheck/nouns"
+
+	"github.com/schollz/closestmatch"
 )
 
 const (
@@ -127,7 +129,7 @@ func runWorker(wg *sync.WaitGroup, jobChan chan JobInfo, stopWorkerChan chan str
 
 				sw, ok := validate(vw)
 				if !ok {
-					fmt.Printf("Line Number :%d, Column Number :%d, Wrong word :%s, Suggested Word:%s\n", ji.lineNumber, cn, vw, sw)
+					fmt.Printf("Line Number :%d, Column Number :%d, Wrong word :%s, Suggested Word:%+v\n", ji.lineNumber, cn, vw, sw)
 				}
 				cn = cn + len(lw) + 1
 			}
@@ -136,19 +138,26 @@ func runWorker(wg *sync.WaitGroup, jobChan chan JobInfo, stopWorkerChan chan str
 	}
 }
 
-func validate(vw []byte) (string, bool) {
+func validate(vw []byte) ([]string, bool) {
 	//fmt.Println("validate :", string(vw))
-
 	aw := dictionary[string(vw[0])]
 
 	//fmt.Printf("len words in the category %s:%d\n", string(vw[0]), len(sw))
-	sw := ""
+	sw := []string{}
 
 	for _, w := range aw {
 		if w == string(vw) {
 			return sw, true
 		}
 	}
+
+	// closest match
+	// Choose a set of bag sizes, more is more accurate but slower
+	bagSizes := []int{2}
+
+	// Create a closestmatch object
+	cm := closestmatch.New(aw, bagSizes)
+	sw = cm.ClosestN(string(vw), 3)
 
 	return sw, false
 }
